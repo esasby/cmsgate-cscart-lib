@@ -27,7 +27,7 @@ class ConfigFormCSCart extends ConfigFormHtml
      */
     public function __construct($formKey, $managedFields)
     {
-        parent::__construct($formKey, $managedFields);
+        parent::__construct($managedFields, $formKey, null, null);
         foreach (fn_get_statuses(STATUSES_ORDER) as $orderStatus) {
             $this->orderStatuses[] = new ListOption($orderStatus['status'], $orderStatus['description']);
         }
