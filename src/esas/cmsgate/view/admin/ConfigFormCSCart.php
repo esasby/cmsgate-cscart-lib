@@ -51,7 +51,16 @@ class ConfigFormCSCart extends ConfigFormHtml
         return element::label(
             attribute::clazz("control-label" . ($configField->isRequired() ? " cm-required" : "")),
             attribute::forr($configField->getKey()),
-            element::content($configField->getName() . " :") //todo check
+            element::content(
+                $configField->getName(),
+                element::a(
+                    attribute::clazz("cm-tooltip"),
+                    attribute::title($configField->getDescription()),
+                    element::i(
+                        attribute::clazz("icon-question-sign")
+                    )
+                ),
+                " :")
         );
     }
 

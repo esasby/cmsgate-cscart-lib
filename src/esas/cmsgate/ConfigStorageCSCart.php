@@ -33,7 +33,7 @@ class ConfigStorageCSCart extends ConfigStorageCms
      */
     protected function loadSettingsFromDB() //todo перенести в func.php
     {
-        $processor_name = Registry::getRegistry()->getPaysystemConnector()->getPaySystemConnectorDescriptor()->getModuleMachineName(); //может быть moduleName?
+        $processor_name = Registry::getRegistry()->getPaysystemConnector()->getPaySystemConnectorDescriptor()->getPaySystemMachinaName(); //может быть moduleName?
         $processor_data = db_get_row("SELECT * FROM ?:payment_processors WHERE processor = ?s OR processor_script = ?s", $processor_name, strtolower($processor_name) . ".tpl");
         if (empty($processor_data)) {
             return array();
