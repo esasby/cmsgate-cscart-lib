@@ -13,8 +13,6 @@ use esas\cmsgate\descriptors\CmsConnectorDescriptor;
 use esas\cmsgate\descriptors\VendorDescriptor;
 use esas\cmsgate\descriptors\VersionDescriptor;
 use esas\cmsgate\lang\LocaleLoaderCSCart;
-use esas\cmsgate\opencart\ModelExtensionPayment;
-use esas\cmsgate\view\admin\AdminViewFields;
 use esas\cmsgate\wrappers\OrderWrapper;
 use esas\cmsgate\wrappers\OrderWrapperCSCart;
 
@@ -35,25 +33,13 @@ class CmsConnectorCSCart extends CmsConnector
 
     public function createCommonConfigForm($managedFields)
     {
-        $configForm  = new ConfigFormOpencart(
-            $managedFields,
-            AdminViewFields::CONFIG_FORM_COMMON,
-            SystemSettingsWrapperOpencart::getInstance()->linkAdminExtensionSettings("commonConfigFormAction"),
-            null,
-            $this->opencartRegistry);
-        $configForm->addSubmitButton(AdminViewFields::CONFIG_FORM_BUTTON_SAVE);
-        $configForm->addSubmitButton(AdminViewFields::CONFIG_FORM_BUTTON_DOWNLOAD_LOG);
-        $configForm->addSubmitButton(AdminViewFields::CONFIG_FORM_BUTTON_CANCEL);
-//        $configForm->addSubmitButton(RequestParams::SAVE_AND_EXIT_BUTTON);
-        $configForm->addCmsManagedFields();
-        return $configForm;
+        return null; //not implemented
     }
 
     public function createSystemSettingsWrapper()
     {
         return null; // not implemented
     }
-
 
     /**
      * По локальному id заказа возвращает wrapper
@@ -82,10 +68,7 @@ class CmsConnectorCSCart extends CmsConnector
      */
     public function createOrderWrapperByExtId($extId)
     {
-        $opencartCmsgateModel = new ModelExtensionPayment($this->opencartRegistry);
-        $orderId = $opencartCmsgateModel->getOrderIdByExtId($extId);
-        if ($orderId == null || $orderId == '0')
-            return null;
+        $orderId = db_get_field("SELECT order_id FROM ?:order_data WHERE data = ?i AND type = 'H'", $extId);
         return $this->createOrderWrapperByOrderId($orderId);
     }
 
@@ -104,7 +87,7 @@ class CmsConnectorCSCart extends CmsConnector
         return new CmsConnectorDescriptor(
             "cmsgate-cscart-lib",
             new VersionDescriptor(
-                "v1.0.1",
+                "v1.1.0",
                 "2020-11-20"
             ),
             "Cmsgate CS-Cart connector",

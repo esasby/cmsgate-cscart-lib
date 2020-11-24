@@ -39,8 +39,8 @@ class OrderWrapperCSCart extends OrderSafeWrapper
 
     /**
      * Полное имя покупателя
-     * @throws Throwable
      * @return string
+     * @throws Throwable
      */
     public function getFullNameUnsafe()
     {
@@ -50,8 +50,8 @@ class OrderWrapperCSCart extends OrderSafeWrapper
     /**
      * Мобильный номер покупателя для sms-оповещения
      * (если включено администратором)
-     * @throws Throwable
      * @return string
+     * @throws Throwable
      */
     public function getMobilePhoneUnsafe()
     {
@@ -61,8 +61,8 @@ class OrderWrapperCSCart extends OrderSafeWrapper
     /**
      * Email покупателя для email-оповещения
      * (если включено администратором)
-     * @throws Throwable
      * @return string
+     * @throws Throwable
      */
     public function getEmailUnsafe()
     {
@@ -71,8 +71,8 @@ class OrderWrapperCSCart extends OrderSafeWrapper
 
     /**
      * Физический адрес покупателя
-     * @throws Throwable
      * @return string
+     * @throws Throwable
      */
     public function getAddressUnsafe()
     {
@@ -81,8 +81,8 @@ class OrderWrapperCSCart extends OrderSafeWrapper
 
     /**
      * Общая сумма товаров в заказе
-     * @throws Throwable
      * @return string
+     * @throws Throwable
      */
     public function getAmountUnsafe()
     {
@@ -91,8 +91,8 @@ class OrderWrapperCSCart extends OrderSafeWrapper
 
     /**
      * Валюта заказа (буквенный код)
-     * @throws Throwable
      * @return string
+     * @throws Throwable
      */
     public function getCurrencyUnsafe()
     {
@@ -101,8 +101,8 @@ class OrderWrapperCSCart extends OrderSafeWrapper
 
     /**
      * Массив товаров в заказе
-     * @throws Throwable
      * @return OrderProductWrapper[]
+     * @throws Throwable
      */
     public function getProductsUnsafe()
     {
@@ -116,8 +116,8 @@ class OrderWrapperCSCart extends OrderSafeWrapper
 
     /**
      * BillId (идентификатор хуткигрош) успешно выставленного счета
-     * @throws Throwable
      * @return mixed
+     * @throws Throwable
      */
     public function getExtIdUnsafe()
     {
@@ -157,7 +157,15 @@ class OrderWrapperCSCart extends OrderSafeWrapper
     public function saveExtId($billId)
     {
         $pp_response[self::BILLID_METADATA_KEY] = $billId;
-        fn_update_order_payment_info($this->getOrderId(), $pp_response); //todo check
+        fn_update_order_payment_info($this->getOrderId(), $pp_response);
+
+        //дополнительно сохраняем идентификатор в таблице order_data для корректной работы CmsConnector->createOrderWrapperByExtId
+        $_data = array(
+            'order_id' => $this->getOrderId(),
+            'type' => "H",
+            'data' => $billId
+        );
+        db_query("REPLACE INTO ?:order_data ?e", $_data);
     }
 
     public function getClientIdUnsafe()
