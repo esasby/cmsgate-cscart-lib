@@ -64,8 +64,9 @@ class CSCartInstallHelper
      * @param $paymentMethod CSCartPaymentMethod
      */
     public static function addPaymentMethod(&$paymentMethod) {
-        if ($paymentMethod->getProcessor() != null && empty($paymentMethod->getProcessor()->getId()))
-            self::addPaymentProcessor($paymentMethod->getProcessor());
+        $processor = $paymentMethod->getProcessor();
+        if ($processor != null && empty($processor->getId()))
+            self::addPaymentProcessor($processor);
         $payment_data = array(
             'company_id' => $paymentMethod->getCompanyId(),
             'position' => $paymentMethod->getPosition(),

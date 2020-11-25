@@ -14,7 +14,7 @@ use Exception;
 
 class ConfigStorageCSCart extends ConfigStorageCms
 {
-    private $configuration;
+    private $configuration = array();
 
     /**
      * ConfigurationWrapperOpencart constructor.
@@ -23,7 +23,8 @@ class ConfigStorageCSCart extends ConfigStorageCms
     public function __construct()
     {
         parent::__construct();
-        $this->configuration = CmsConnectorCSCart::getInstance()->getMainPaymentMethod()->getProcessorParams();
+        if (CmsConnectorCSCart::getInstance()->getMainPaymentMethod() != null)
+            $this->configuration = CmsConnectorCSCart::getInstance()->getMainPaymentMethod()->getProcessorParams();
     }
 
     /**
@@ -62,6 +63,6 @@ class ConfigStorageCSCart extends ConfigStorageCms
      */
     public function saveConfig($key, $value)
     {
-       //not implemented
+        //not implemented
     }
 }
