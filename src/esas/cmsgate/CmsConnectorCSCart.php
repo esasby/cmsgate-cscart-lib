@@ -9,6 +9,8 @@
 namespace esas\cmsgate;
 
 
+use esas\cmsgate\cscart\CSCartPaymentMethod;
+use esas\cmsgate\cscart\CSCartPaymentProcessor;
 use esas\cmsgate\descriptors\CmsConnectorDescriptor;
 use esas\cmsgate\descriptors\VendorDescriptor;
 use esas\cmsgate\descriptors\VersionDescriptor;
@@ -27,7 +29,8 @@ class CmsConnectorCSCart extends CmsConnector
      * Для удобства работы в IDE и подсветки синтаксиса.
      * @return $this
      */
-    public static function getInstance() {
+    public static function getInstance()
+    {
         return Registry::getRegistry()->getCmsConnector();
     }
 
@@ -82,20 +85,33 @@ class CmsConnectorCSCart extends CmsConnector
         return new LocaleLoaderCSCart();
     }
 
-    public function createCmsConnectorDescriptor()
+    public function getMainPaymentMethod()
     {
-        return new CmsConnectorDescriptor(
-            "cmsgate-cscart-lib",
-            new VersionDescriptor(
-                "v1.1.0",
-                "2020-11-20"
-            ),
-            "Cmsgate CS-Cart connector",
-            "https://bitbucket.esas.by/projects/CG/repos/cmsgate-cscart-lib/browse",
-            VendorDescriptor::esas(),
-            "cscart"
-        );
+        $processor_name = Registry::getRegistry()->getModuleDescriptor()->getModuleMachineName();
+        $processor_data = db_get_row("SELECT * FROM ?:payment_processors WHERE processor = ?s AND processor_script = ?s", ucfirst($processor_name), strtolower($processor_name) . ".php");
+        if (empty($processor_data))
+            return null;
+        $paymentProceccor = (new CSCartPaymentProcessor())
+            ->setProcessorName($processor_data['processor'])
+            ->setScript($processor_data['processor_script'])
+            ->setTemplate($processor_data['processor_template'])
+            ->setAdminTemplate($processor_data['admin_template'])
+            ->setId($processor_data['processor_id']);
+        $paymentMethod_date = db_get_row("SELECT ?:payment_descriptions.*, ?:payments.* FROM ?:payments LEFT JOIN ?:payment_descriptions ON ?:payments.payment_id = ?:payment_descriptions.payment_id WHERE processor_id = ?i", $paymentProceccor->getId());
+        if (empty($paymentMethod_date))
+            return null;
+        $paymentMethod = (new CSCartPaymentMethod())
+            ->setProcessor($paymentProceccor)
+            ->setId($paymentMethod_date['payment_id'])
+            ->setName($paymentMethod_date['payment'])
+            ->setDescription($paymentMethod_date['instructions'])
+            ->setPosition($paymentMethod_date['position'])
+            ->setPaymentCategory($paymentMethod_date['payment_category'])
+            ->setProcessorParams(unserialize($paymentMethod_date['processor_params']))
+            ->setCompanyId($paymentMethod_date['company_id']);
+        return $paymentMethod;
     }
+
 
     public function getConstantConfigValue($key)
     {
@@ -105,5 +121,20 @@ class CmsConnectorCSCart extends CmsConnector
             default:
                 return parent::getConstantConfigValue($key);
         }
+    }
+
+    public function createCmsConnectorDescriptor()
+    {
+        return new CmsConnectorDescriptor(
+            "cmsgate-cscart-lib",
+            new VersionDescriptor(
+                "v1.2.0",
+                "2020-11-25"
+            ),
+            "Cmsgate CS-Cart connector",
+            "https://bitbucket.esas.by/projects/CG/repos/cmsgate-cscart-lib/browse",
+            VendorDescriptor::esas(),
+            "cscart"
+        );
     }
 }

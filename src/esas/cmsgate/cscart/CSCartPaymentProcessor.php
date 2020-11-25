@@ -17,10 +17,7 @@ class CSCartPaymentProcessor
     private $type = 'P';
     private $addon;
 
-    /**
-     * CSCartPaymentProcessor constructor.
-     */
-    public function __construct()
+    public function initDefaults()
     {
         //default init
         $moduleMachineName = Registry::getRegistry()->getModuleDescriptor()->getModuleMachineName();

@@ -20,11 +20,15 @@ class CSCartPaymentMethod
     private $processor;
     private $description;
     private $logo;
+    /**
+     * @var array
+     */
+    private $processorParams;
 
     /**
      * CSCartPaymentMethod constructor.
      */
-    public function __construct()
+    public function initDefaults()
     {
         $this->name = Registry::getRegistry()->getTranslator()->getConfigFieldDefault(ConfigFields::paymentMethodName());
         $this->description = Registry::getRegistry()->getTranslator()->getConfigFieldDefault(ConfigFields::paymentMethodDetails());
@@ -177,6 +181,21 @@ class CSCartPaymentMethod
         return $this;
     }
 
+    /**
+     * @return array
+     */
+    public function getProcessorParams()
+    {
+        return $this->processorParams;
+    }
 
-
+    /**
+     * @param array $processorParams
+     * @return CSCartPaymentMethod
+     */
+    public function setProcessorParams($processorParams)
+    {
+        $this->processorParams = $processorParams;
+        return $this;
+    }
 }

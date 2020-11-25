@@ -74,7 +74,7 @@ class CSCartInstallHelper
             'localization' => '',
             'payment_category' => $paymentMethod->getPaymentCategory(),
             'payment' => $paymentMethod->getName(),
-            'description' => $paymentMethod->getDescription(),
+            'instructions' => $paymentMethod->getDescription(),
             'surcharge_title' => ''
         );
         if (!empty($paymentMethod->getLogo()))
