@@ -23,7 +23,8 @@ class ConfigStorageCSCart extends ConfigStorageCms
     public function __construct()
     {
         parent::__construct();
-        if (CmsConnectorCSCart::getInstance()->getMainPaymentMethod() != null)
+        $paymentMethod = CmsConnectorCSCart::getInstance()->getMainPaymentMethod();
+        if ($paymentMethod != null && is_array($paymentMethod->getProcessorParams()))
             $this->configuration = CmsConnectorCSCart::getInstance()->getMainPaymentMethod()->getProcessorParams();
     }
 

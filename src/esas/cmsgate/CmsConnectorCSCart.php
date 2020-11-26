@@ -129,7 +129,7 @@ class CmsConnectorCSCart extends CmsConnector
         return new CmsConnectorDescriptor(
             "cmsgate-cscart-lib",
             new VersionDescriptor(
-                "v1.2.2",
+                "v1.2.3",
                 "2020-11-26"
             ),
             "Cmsgate CS-Cart connector",
