@@ -15,6 +15,7 @@ use esas\cmsgate\descriptors\CmsConnectorDescriptor;
 use esas\cmsgate\descriptors\VendorDescriptor;
 use esas\cmsgate\descriptors\VersionDescriptor;
 use esas\cmsgate\lang\LocaleLoaderCSCart;
+use esas\cmsgate\utils\RequestParamsCSCart;
 use esas\cmsgate\wrappers\OrderWrapper;
 use esas\cmsgate\wrappers\OrderWrapperCSCart;
 
@@ -60,7 +61,7 @@ class CmsConnectorCSCart extends CmsConnector
      */
     public function createOrderWrapperForCurrentUser()
     {
-        $orderId = $this->session->data['order_id']; //todo check
+        $orderId = $this->session->data[RequestParamsCSCart::ORDER_ID]; //todo check
         return $this->createOrderWrapperByOrderId($orderId);
     }
 
@@ -128,8 +129,8 @@ class CmsConnectorCSCart extends CmsConnector
         return new CmsConnectorDescriptor(
             "cmsgate-cscart-lib",
             new VersionDescriptor(
-                "v1.2.1",
-                "2020-11-25"
+                "v1.2.2",
+                "2020-11-26"
             ),
             "Cmsgate CS-Cart connector",
             "https://bitbucket.esas.by/projects/CG/repos/cmsgate-cscart-lib/browse",
